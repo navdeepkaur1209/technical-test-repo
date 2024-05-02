@@ -1,0 +1,14 @@
+{
+  "navigation": "Navigation",
+  "dashboard": "Dashboard",
+  "menu": "Menu",
+  "quotes": "Quotes",
+  "jobs": "Jobs",
+  "schedules": "Schedules",
+  "supplier-orders": "Supplier Orders",
+  "job-sheets": "Job Sheets",
+  "users": "Users",
+  "clients": "Clients",
+  "app-users": "App Users",
+  "reports": "Reports"
+}

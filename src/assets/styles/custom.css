@@ -1,0 +1,170 @@
+/* Custmizing Some MUI Styles */
+
+
+/* .MuiTableCell-head {
+    text-transform: capitalize;
+} */
+
+.MuiMenu-paper.MuiPopover-paper {
+    max-height: 400px;
+    max-width: 500px;
+}
+
+.MuiMenu-paper.MuiPopover-paper li {
+    white-space: normal;
+}
+
+.priceWidth {
+    width: 75px;
+}
+
+.priceFormat {
+    width: 75px;
+}
+
+.priceFormat input {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.w-auto .priceFormat {
+    width: auto;
+}
+
+.quantityWidth {
+    width: 55px;
+}
+
+.addWidth {
+    width: 70px;
+}
+
+.titleWidth {
+    width: 168px;
+}
+
+.srwidth {
+    width: 45px;
+}
+
+.item-icon {
+    min-width: 400px;
+}
+
+.fence-product {
+    width: 605px;
+}
+
+.fence-opt-item {
+    max-width: 355px;
+}
+
+.priceWidth input,
+.srwidth input,
+.quantityWidth input,
+.text-center input,
+.percentageFormat input,
+.addWidth input {
+    text-align: center;
+}
+
+.priceFormat input {
+    text-align: right;
+}
+
+.inputDisable .priceFormat {
+    pointer-events: none;
+}
+
+.inputDisable .priceFormat input {
+    color: rgb(191, 191, 191);
+}
+
+.pailingWidth {
+    width: 634px;
+}
+
+.equal-table td {
+    height: 49px;
+}
+
+.cost-col {
+    width: 99.93px;
+}
+
+.client-col {
+    width: 126px;
+}
+
+.client-col {
+    width: 126px;
+}
+
+.neigh-col {
+    width: 128.07px;
+}
+
+@media (max-width: 1199px) {
+    .item-icon {
+        min-width: 250px;
+    }
+}
+
+.custom-number-input {
+    text-align: center;
+    font: inherit;
+    letter-spacing: inherit;
+    box-sizing: border-box;
+    background: none;
+    margin: 0;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    min-width: 0;
+    -webkit-animation-name: mui-auto-fill-cancel;
+    animation-name: mui-auto-fill-cancel;
+    -webkit-animation-duration: 10ms;
+    animation-duration: 10ms;
+    padding: 10px 5px;
+    font-size: 0.875rem;
+    line-height: 1.4375em;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 400;
+    color: #262626;
+    cursor: text;
+    border-radius: 4px;
+    border: 1px solid #e6ebf1;
+    outline: 0 !important;
+    margin: auto;
+}
+
+.custom-number-input:disabled {
+    -webkit-text-fill-color: #bfbfbf;
+}
+
+.custom-number-input:hover {
+    border-color: rgba(22, 119, 255, 0.5);
+}
+
+.custom-number-input:focus,
+.custom-number-input:focus-within {
+    box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+    border-color: rgba(22, 119, 255, 0.5);
+}
+
+.custom-number-input.number-error {
+    border-color: #ff4d4f;
+}
+
+.custom-number-input.number-error:hover {
+    border-color: rgba(255, 77, 79, 0.5);
+}
+
+.custom-number-input.number-error:focus,
+.custom-number-input.number-error:focus-within {
+    box-shadow: rgba(255, 77, 79, 0.2);
+    border-color: rgba(255, 77, 79, 0.5);
+}
+
+.MuiAutocomplete-listbox {
+    max-height: 200px;
+}
