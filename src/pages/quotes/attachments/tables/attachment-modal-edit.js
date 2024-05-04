@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CloudUploadOutlined } from '@ant-design/icons';
+import { uploadFileToS3 } from 'utils/helpers';
 
 // Material
 import TextField from '@mui/material/TextField';
@@ -13,6 +14,10 @@ import * as yup from 'yup';
 // GraphQL.
 import useGraphQLQuery from 'hooks/useGraphQLQuery';
 import GetAttachment from 'graphql/quotes/GetAttachment';
+import UpdateAttachment from 'graphql/quotes/UpdateAttachment';
+import useGraphQLMutation from 'hooks/useGraphQLMutation';
+import useGraphQLLazyQuery from 'hooks/useGraphQLLazyQuery';
+import GetAttachmentUploadPermission from 'graphql/quotes/GetAttachmentUploadPermission';
 
 /* Static methods and values */
 const formikValidationSchema = yup.object().shape({
@@ -28,6 +33,8 @@ const formikInitialValues = {
 const AttachmentModalEdit = ({ quoteId, row, callback }) => {
   const formikRef = useRef();
   const [files, setFiles] = useState('');
+  const [newFile, setNewFile] = useState();
+  const [uploading, setUploading] = useState(false);
 
   /* GraphQL: GetAttachment */
   const { data: dataGetAttachment } = useGraphQLQuery(GetAttachment, { variables: { id: quoteId, attachmentId: row['AttachmentId'] } });
@@ -43,6 +50,61 @@ const AttachmentModalEdit = ({ quoteId, row, callback }) => {
     }
   }, [dataGetAttachment]);
 
+  const handleFileChange = (e) => {
+    if (e.target.files.length) {
+      setNewFile(e.target.files[0]);
+    }
+  };
+
+  const [mutationUpdateAttachment, { data: resultUpdateAttachment }] = useGraphQLMutation(UpdateAttachment);
+
+  const [getUploadPermissions, { data: resultUploadPermissions }] = useGraphQLLazyQuery(GetAttachmentUploadPermission, {
+    variables: { id: quoteId, attachmentId: '' }
+  });
+
+  useEffect(() => {
+    if (resultUploadPermissions && resultUploadPermissions.GetAttachmentUploadPermission) {
+      const data = resultUploadPermissions.GetAttachmentUploadPermission;
+      if (data.Url) {
+        uploadFileToS3(data.Url, JSON.parse(data.Fields), newFile);
+        callback(true);
+      }
+    }
+  }, [resultUploadPermissions, newFile, callback]);
+
+  useEffect(() => {
+    if (resultUpdateAttachment && resultUpdateAttachment.UpdateAttachment) {
+      //Permissions and upload to S3 need ti eb done only if new attachment has been selected
+      if (resultUpdateAttachment.UpdateAttachment.Status === 'SUCCESS' && newFile) {
+        getUploadPermissions({
+          variables: {
+            id: quoteId,
+            attachmentId: resultUpdateAttachment.UpdateAttachment.Id
+          }
+        });
+      } else {
+        callback(true);
+      }
+    }
+  }, [resultUpdateAttachment, getUploadPermissions, quoteId, newFile, callback]);
+
+  const handleSubmit = (values) => {
+    if (newFile) {
+      setUploading(true);
+    }
+    mutationUpdateAttachment({
+      variables: {
+        id: quoteId,
+        attachmentId: row['AttachmentId'],
+        attachment: {
+          FileExtension: newFile ? newFile?.name.split('.').pop() : files?.split('.').pop(),
+          Title: values.title,
+          Description: values.description
+        }
+      }
+    });
+  };
+
   /* Render */
   return (
     <>
@@ -52,9 +114,7 @@ const AttachmentModalEdit = ({ quoteId, row, callback }) => {
         enableReinitialize
         validationSchema={formikValidationSchema}
         onSubmit={async (values) => {
-          // Your form submit logic can be added here if needed
-          callback(true);
-          console.log(values);
+          handleSubmit(values);
         }}
       >
         {({ values, handleChange, handleBlur, isSubmitting }) => (
@@ -94,7 +154,7 @@ const AttachmentModalEdit = ({ quoteId, row, callback }) => {
             <Grid container columnSpacing={3} alignItems="center" mb={4}>
               <Grid item sm={12}>
                 {/* Optional: Add file input for uploading */}
-                {/* <input type="file" id="quote-attachment-file" disabled={uploading} onChange={handleFileChange} /> */}
+                <input type="file" id="quote-attachment-file" disabled={uploading} onChange={handleFileChange} />
               </Grid>
               <Grid item xs={12}>
                 {files ? (

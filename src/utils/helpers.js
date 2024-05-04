@@ -67,5 +67,5 @@ export function uploadFileToS3(uploadUrl, presignedFields, file) {
     xhr.onload = function () {
       this.status === 204 ? resolve() : reject(this.responseText);
     };
-  });
+  }).catch((error) => console.log(error.message));
 }
